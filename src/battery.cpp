@@ -64,10 +64,10 @@ void printBatteryStats()
   tft_println("Avg Power: " + String(power) + " mW");
   tft_println("Health: " + String(health) + " %");
 
-  while (digitalRead(WIO_KEY_B) == LOW)
+  while (digitalRead(WIO_KEY_B) == HIGH)
   {
   }
 
   tft_clear();
-  digitalWrite(LCD_BACKLIGHT, LOW);
+  // digitalWrite(LCD_BACKLIGHT, LOW);
 }

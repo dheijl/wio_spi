@@ -5,21 +5,18 @@
 #include "debug.h"
 #include <tft_functions.h>
 #include <battery.h>
+#include "buttons.h"
 
 // put function declarations here:
 int myFunction(int, int);
 void setup_debug();
+void setup_spi();
 
 void setup()
 {
   setup_debug();
-
-  Serial.println("SPI setup");
-  SPI.begin();
-  SPI.setBitOrder(MSBFIRST);
-  SPI.setDataMode(SPI_MODE0);
-  SPI.setClockDivider(1);
-  Serial.println("SPI initialised");
+  // buttons
+  init_buttons();
 
   // initialize tft
   init_tft();
@@ -27,6 +24,8 @@ void setup()
   // initialize battery
   init_battery();
   printBatteryStats();
+  // initialize spi
+  setup_spi();
 }
 
 void loop()
@@ -51,4 +50,19 @@ void setup_debug()
   }
   delay(100);
 #endif
+}
+
+void setup_spi()
+{
+  tft_println("SPI setup");
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0);
+  SPI.setClockDivider(1);
+  tft_println("SPI initialised");
+  delay(500);
+  while (digitalRead(WIO_KEY_B) == HIGH)
+  {
+  }
+  tft_clear();
 }
