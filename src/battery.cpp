@@ -63,9 +63,10 @@ void printBatteryStats()
   tft_println("Full Cap :" + String(fullCapacity) + " mAH");
   tft_println("Avg Power: " + String(power) + " mW");
   tft_println("Health: " + String(health) + " %");
-
+  delay(500);
   while (digitalRead(WIO_KEY_B) == HIGH)
   {
+    delay(1);
   }
 
   tft_clear();

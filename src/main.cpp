@@ -7,17 +7,21 @@
 #include <battery.h>
 #include "buttons.h"
 
-// put function declarations here:
-int myFunction(int, int);
-void setup_debug();
-void setup_spi();
+// for documentation
+const auto spi_ss = PIN_SPI_SS;     // (50ul) = BCM24 = pin 18 on wio breakout
+const auto spi_mosi = PIN_SPI_MOSI; // (48ul) = BCM10 = pin 19 on wio breakout
+const auto spi_miso = PIN_SPI_MISO; // (47ul) = BCM9  = pin 21 on wio breakout
+const auto spi_sck = PIN_SPI_SCK;   // (49ul) = BCM11 = pin 23 on wio breakout
+
+// local function declarations here:
+static void setup_debug();
+static void setup_spi();
 
 void setup()
 {
   setup_debug();
   // buttons
   init_buttons();
-
   // initialize tft
   init_tft();
   tft_clear();
@@ -33,13 +37,7 @@ void loop()
   // put your main code here, to run repeatedly:
 }
 
-// put function definitions here:
-int myFunction(int x, int y)
-{
-  return x + y;
-}
-
-void setup_debug()
+static void setup_debug()
 {
 #ifdef DEBUG
   Serial.begin(115200);
@@ -52,7 +50,7 @@ void setup_debug()
 #endif
 }
 
-void setup_spi()
+static void setup_spi()
 {
   tft_println("SPI setup");
   SPI.begin();
@@ -63,6 +61,7 @@ void setup_spi()
   delay(500);
   while (digitalRead(WIO_KEY_B) == HIGH)
   {
+    delay(1);
   }
   tft_clear();
 }
