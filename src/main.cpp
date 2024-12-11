@@ -3,6 +3,8 @@
 #include <SPI.h>
 
 #include "debug.h"
+#include <tft_functions.h>
+#include <battery.h>
 
 // put function declarations here:
 int myFunction(int, int);
@@ -11,8 +13,20 @@ void setup_debug();
 void setup()
 {
   setup_debug();
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+
+  Serial.println("SPI setup");
+  SPI.begin();
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0);
+  SPI.setClockDivider(1);
+  Serial.println("SPI initialised");
+
+  // initialize tft
+  init_tft();
+  tft_clear();
+  // initialize battery
+  init_battery();
+  printBatteryStats();
 }
 
 void loop()
