@@ -42,7 +42,7 @@ void loop()
   memset(rxbuf, 0xff, sizeof(rxbuf));
   txbuf[0] = '?';
   txbuf[1] = 0;
-  size_t count = 2;
+  size_t count = 1;
 
   tft_println("Start SPI");
   digitalWrite(PIN_SPI_SS, LOW);
@@ -50,18 +50,19 @@ void loop()
 
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
-  SPI.transfer(txbuf, NULL, count, false);
-  SPI.waitForTransfer();
+  // SPI.transfer(txbuf, rxbuf, count, false);
+  rxbuf[0] = SPI.transfer((byte)'?');
+  // SPI.waitForTransfer();
   SPI.endTransaction();
   digitalWrite(PIN_SPI_SS, HIGH);
   tft_println("SPI complete");
 #ifdef DEBUG
-  for (size_t i = 0; i < sizeof(rxbuf); i++)
+  for (size_t i = 0; i < count; i++)
   {
     print_hex(rxbuf[i]);
   }
   Serial.println();
-  for (size_t i = 0; i < sizeof(txbuf); i++)
+  for (size_t i = 0; i < count; i++)
   {
     print_hex(txbuf[i]);
   }
@@ -94,6 +95,8 @@ static void setup_debug()
 static void setup_spi()
 {
   tft_println("SPI setup");
+  pinMode(PIN_SPI_SS, OUTPUT);
+  digitalWrite(PIN_SPI_SS, HIGH);
   SPI.begin();
   /*
   SPI.setBitOrder(MSBFIRST);
