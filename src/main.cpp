@@ -46,7 +46,7 @@ void loop()
 
   tft_println("Start SPI");
   digitalWrite(PIN_SPI_SS, LOW);
-  SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE0));
+  SPI.beginTransaction(SPISettings((int)24000000, MSBFIRST, (uint8_t)SPI_MODE0));
 
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
