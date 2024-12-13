@@ -42,15 +42,13 @@ static unsigned char rxbuf[64];
 void loop()
 {
 
-  unsigned char txbuf[64];
   memset(txbuf, 0xff, sizeof(txbuf));
   memset(rxbuf, 0xff, sizeof(rxbuf));
-  txbuf[0] = '?';
-  txbuf[1] = 0;
   size_t count = strlen(tqbf);
   memcpy(txbuf, tqbf, count);
 
   tft_println("Start SPI");
+  // 24MHz transmit is OK, but receive is max 12 Mhz
   SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE0));
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
@@ -59,7 +57,7 @@ void loop()
   {
     digitalWrite(PIN_SPI_SS, LOW);
     rxbuf[i] = SPI.transfer(txbuf[i]);
-    SPI.waitForTransfer();
+    // SPI.waitForTransfer();
     digitalWrite(PIN_SPI_SS, HIGH);
   }
   SPI.endTransaction();
