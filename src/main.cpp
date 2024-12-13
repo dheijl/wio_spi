@@ -53,13 +53,13 @@ void loop()
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
   // SPI.transfer(txbuf, rxbuf, count, false);
+  digitalWrite(PIN_SPI_SS, LOW);
   for (size_t i = 0; i < count; i++)
   {
-    digitalWrite(PIN_SPI_SS, LOW);
     rxbuf[i] = SPI.transfer(txbuf[i]);
     // SPI.waitForTransfer();
-    digitalWrite(PIN_SPI_SS, HIGH);
   }
+  digitalWrite(PIN_SPI_SS, HIGH);
   SPI.endTransaction();
   tft_println("SPI complete");
 #ifdef DEBUG
