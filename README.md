@@ -7,4 +7,4 @@ Spi speed seems limited at 12 Mhz for Au -> Wio transfer, while Wio -> Au transf
 For transmitting data, the Au SPI_peripheral component needs the master to toggle the chip select line for every byte.
 For receiving the AU does not need this, the CS line can stay low between bytes.
 
-You acan find the Lucid code for the Alchitry Au [here](https://github.com/dheijl/AlchitryAuTests/tree/main/WIO_SPIO).
+You can find the Lucid code for the Alchitry Au [here](https://github.com/dheijl/AlchitryAuTests/tree/main/WIO_SPIO).
