@@ -13,10 +13,13 @@ const auto spi_mosi = PIN_SPI_MOSI; // (48ul) = BCM10 = pin 19 on wio breakout
 const auto spi_miso = PIN_SPI_MISO; // (47ul) = BCM9  = pin 21 on wio breakout
 const auto spi_sck = PIN_SPI_SCK;   // (49ul) = BCM11 = pin 23 on wio breakout
 
+const char *tqbf = "the quick brown fox jumps over the lazy dog\r\n";
+
 // local function declarations here:
 static void setup_debug();
 static void setup_spi();
 static void print_hex(uint8_t x);
+static void wait_btn();
 
 void setup()
 {
@@ -33,33 +36,42 @@ void setup()
   setup_spi();
 }
 
+static unsigned char txbuf[64];
+static unsigned char rxbuf[64];
+
 void loop()
 {
 
   unsigned char txbuf[64];
   memset(txbuf, 0xff, sizeof(txbuf));
-  unsigned char rxbuf[64];
   memset(rxbuf, 0xff, sizeof(rxbuf));
   txbuf[0] = '?';
   txbuf[1] = 0;
-  size_t count = 1;
+  size_t count = strlen(tqbf);
+  memcpy(txbuf, tqbf, count);
 
   tft_println("Start SPI");
-  digitalWrite(PIN_SPI_SS, LOW);
-  SPI.beginTransaction(SPISettings((int)24000000, MSBFIRST, (uint8_t)SPI_MODE0));
-
+  SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE0));
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
   // SPI.transfer(txbuf, rxbuf, count, false);
-  rxbuf[0] = SPI.transfer((byte)'?');
-  // SPI.waitForTransfer();
+  for (size_t i = 0; i < count; i++)
+  {
+    digitalWrite(PIN_SPI_SS, LOW);
+    rxbuf[i] = SPI.transfer(txbuf[i]);
+    SPI.waitForTransfer();
+    digitalWrite(PIN_SPI_SS, HIGH);
+  }
   SPI.endTransaction();
-  digitalWrite(PIN_SPI_SS, HIGH);
   tft_println("SPI complete");
 #ifdef DEBUG
   for (size_t i = 0; i < count; i++)
   {
     print_hex(rxbuf[i]);
+    if (rxbuf[i] != 0xff && rxbuf[i] != 0x00)
+    {
+      tft_print(String(rxbuf[i]));
+    }
   }
   Serial.println();
   for (size_t i = 0; i < count; i++)
@@ -68,6 +80,8 @@ void loop()
   }
   Serial.println();
 #endif
+  wait_btn();
+  tft_clear();
 }
 
 static void print_hex(uint8_t x)
@@ -104,10 +118,18 @@ static void setup_spi()
   SPI.setClockDivider(1);
   */
   tft_println("SPI initialised");
-  delay(500);
+  wait_btn();
+  tft_clear();
+}
+
+static void wait_btn()
+{
   while (digitalRead(WIO_KEY_B) == HIGH)
   {
     delay(1);
   }
-  tft_clear();
+  while (digitalRead(WIO_KEY_B) == LOW)
+  {
+    delay(1);
+  }
 }
