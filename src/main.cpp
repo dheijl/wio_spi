@@ -13,7 +13,7 @@ const auto spi_mosi = PIN_SPI_MOSI; // (48ul) = BCM10 = pin 19 on wio breakout
 const auto spi_miso = PIN_SPI_MISO; // (47ul) = BCM9  = pin 21 on wio breakout
 const auto spi_sck = PIN_SPI_SCK;   // (49ul) = BCM11 = pin 23 on wio breakout
 
-const char *tqbf = "the quick brown fox jumps over the lazy dog\r\n";
+const char *tqbf = "the quick brown fox jumps over the lazy dog!the quick brown fox jumps over the lazy dog\r\n";
 
 // local function declarations here:
 static void setup_debug();
@@ -36,8 +36,8 @@ void setup()
   setup_spi();
 }
 
-static unsigned char txbuf[64];
-static unsigned char rxbuf[64];
+static unsigned char txbuf[128];
+static unsigned char rxbuf[128];
 
 void loop()
 {
@@ -54,12 +54,14 @@ void loop()
   // TXBUF == NULL => read only
   // SPI.transfer(txbuf, rxbuf, count, false);
   // SPI.waitForTransfer();
+  auto st = micros();
   digitalWrite(PIN_SPI_SS, LOW);
   for (size_t i = 0; i < count; i++)
   {
     rxbuf[i] = SPI.transfer(txbuf[i]);
   }
   digitalWrite(PIN_SPI_SS, HIGH);
+  auto et = micros();
   SPI.endTransaction();
   tft_println("SPI complete");
 #ifdef DEBUG
@@ -77,6 +79,9 @@ void loop()
     print_hex(txbuf[i]);
   }
   Serial.println();
+  auto tt = et - st;
+  auto pc = tt / count;
+  Serial.println("Elapsed: " + String(tt) + "µs, per char: " + String(pc) + "µs");
 #endif
   wait_btn();
   tft_clear();
