@@ -53,11 +53,11 @@ void loop()
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
   // SPI.transfer(txbuf, rxbuf, count, false);
+  // SPI.waitForTransfer();
   digitalWrite(PIN_SPI_SS, LOW);
   for (size_t i = 0; i < count; i++)
   {
     rxbuf[i] = SPI.transfer(txbuf[i]);
-    // SPI.waitForTransfer();
   }
   digitalWrite(PIN_SPI_SS, HIGH);
   SPI.endTransaction();
@@ -68,7 +68,7 @@ void loop()
     print_hex(rxbuf[i]);
     if (rxbuf[i] != 0xff && rxbuf[i] != 0x00)
     {
-      tft_print(String(rxbuf[i]));
+      tft_print(String((char)rxbuf[i]));
     }
   }
   Serial.println();
