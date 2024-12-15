@@ -49,19 +49,19 @@ void loop()
 
   tft_println("Start SPI");
   // 24MHz transmit is OK, but receive is max 12 Mhz
-  SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE0));
+  SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE1));
   // TXBUF != NULL => write and read simultaneously
   // TXBUF == NULL => read only
   // SPI.transfer(txbuf, rxbuf, count, false);
   // SPI.waitForTransfer();
-  auto st = micros();
   digitalWrite(PIN_SPI_SS, LOW);
+  auto st = micros();
   for (size_t i = 0; i < count; i++)
   {
     rxbuf[i] = SPI.transfer(txbuf[i]);
   }
-  digitalWrite(PIN_SPI_SS, HIGH);
   auto et = micros();
+  digitalWrite(PIN_SPI_SS, HIGH);
   SPI.endTransaction();
   tft_println("SPI complete");
 #ifdef DEBUG
@@ -80,7 +80,7 @@ void loop()
   }
   Serial.println();
   auto tt = et - st;
-  auto pc = tt / count;
+  auto pc = (float)tt / (float)count;
   Serial.println("Elapsed: " + String(tt) + "µs, per char: " + String(pc) + "µs");
 #endif
   wait_btn();
