@@ -13,7 +13,7 @@ const auto spi_mosi = PIN_SPI_MOSI; // (48ul) = BCM10 = pin 19 on wio breakout
 const auto spi_miso = PIN_SPI_MISO; // (47ul) = BCM9  = pin 21 on wio breakout
 const auto spi_sck = PIN_SPI_SCK;   // (49ul) = BCM11 = pin 23 on wio breakout
 
-const char *tqbf = "the quick brown fox jumps over the lazy dog!the quick brown fox jumps over the lazy dog\r\n";
+const char *tqbf = "the quick brown fox jumps over the lazy dog!the quick brown fox jumps over the lazy dog\r\n!";
 
 // local function declarations here:
 static void setup_debug();
