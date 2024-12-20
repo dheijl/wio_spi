@@ -23,8 +23,6 @@ static void setup_spi();
 static void print_hex(uint8_t x);
 static void wait_sdata();
 
-// static void wait_btn();
-
 void setup()
 {
   setup_debug();
@@ -48,13 +46,11 @@ void loop()
   // wait for data ready from slave
   wait_sdata();
   tft_clear();
-
-  // memset(rxbuf, 0xff, sizeof(rxbuf));
   memset(txbuf, 0xff, sizeof(txbuf));
   size_t count = strlen(tqbf);
   memcpy(txbuf, tqbf, count);
-  wait_sdata();
 #ifdef DEBUG
+  // show transmit buffer
   Serial.print("TX: ");
   for (size_t i = 0; i < count; i++)
   {
@@ -65,18 +61,15 @@ void loop()
   tft_println("Start SPI");
   // 24MHz transmit is OK, but receive is max 12 Mhz
   SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE1));
-  // TXBUF != NULL => write and read simultaneously
-  // TXBUF == NULL => read only
-  // SPI.transfer(txbuf, rxbuf, count, false);
-  // SPI.waitForTransfer();
   digitalWrite(PIN_SPI_SS, LOW);
   auto st = micros();
-  SPI.transfer(txbuf, count);
+  SPI.transfer(txbuf, count); // DMA transfer hangs, don't know hy
   auto et = micros();
   digitalWrite(PIN_SPI_SS, HIGH);
   SPI.endTransaction();
   tft_println("SPI complete");
 #ifdef DEBUG
+  // show received data
   Serial.print("RX: ");
   for (size_t i = 0; i < count; i++)
   {
@@ -138,18 +131,3 @@ static void wait_sdata()
     delay(1);
   }
 }
-
-/*
-// wait for middle button
-static void wait_btn()
-{
-  while (digitalRead(BUTTON_2) == HIGH)
-  {
-    delay(1);
-  }
-  while (digitalRead(BUTTON_2) == LOW)
-  {
-    delay(1);
-  }
-}
-*/

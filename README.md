@@ -1,3 +1,6 @@
+
+# WIO SPI
+
 Proof of concept code for SPI communication between a Wio terminal and an Alchitry AU + Br Element.
 
 The Wio is the SPI master, and the AU the SPI slave.
