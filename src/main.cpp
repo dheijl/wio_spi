@@ -58,7 +58,7 @@ void loop()
   }
   Serial.println();
 #endif
-  tft_println("Start SPI");
+  tft_println("Start SPI transfer");
   // 24MHz transmit is OK, but receive is max 12 Mhz
   SPI.beginTransaction(SPISettings((int)12000000, MSBFIRST, (uint8_t)SPI_MODE1));
   digitalWrite(PIN_SPI_SS, LOW);
@@ -67,7 +67,7 @@ void loop()
   auto et = micros();
   digitalWrite(PIN_SPI_SS, HIGH);
   SPI.endTransaction();
-  tft_println("SPI complete");
+  tft_println("Transfer complete");
 #ifdef DEBUG
   // show received data
   Serial.print("RX: ");

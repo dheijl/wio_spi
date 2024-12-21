@@ -5,7 +5,7 @@ TFT_eSPI tft = TFT_eSPI();
 void init_tft()
 {
   tft.begin();
-  tft.setRotation(3);
+  tft.setRotation(0); // 0 = portrait, 3 = landscape
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(1);
